@@ -13,5 +13,5 @@ const providers = {
 
 container.registerInstance<IMailProvider>(
   'MailProvider',
-  container.resolve(mailConfig.driver)
+  providers[mailConfig.driver]
 );
