@@ -5,16 +5,16 @@ import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointment
 import IFindAllInMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllInMonthFromProviderDTO';
 import IFindAllInDayFromProviderDTO from '@modules/appointments/dtos/IFindAllInDayFromProviderDTO';
 
-import Appointment from '../entities/Appointments';
+import Appointments from '../entities/Appointments';
 
 class AppointmentsRepository implements IAppointmentsRepository {
-  private ormRepository: Repository<Appointment>;
+  private ormRepository: Repository<Appointments>;
 
   constructor() {
-    this.ormRepository = getRepository(Appointment);
+    this.ormRepository = getRepository(Appointments);
   }
 
-  public async findByDate(date: Date): Promise<Appointment | undefined> {
+  public async findByDate(date: Date): Promise<Appointments | undefined> {
     const findAppointment = await this.ormRepository.findOne({
       where: { date },
     });
@@ -26,7 +26,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
     provider_id,
     month,
     year,
-  }: IFindAllInMonthFromProviderDTO): Promise<Appointment[]> {
+  }: IFindAllInMonthFromProviderDTO): Promise<Appointments[]> {
     const parsedMonth = String(month).padStart(2, '0');
     const appointments = await this.ormRepository.find({
       where: {
@@ -46,7 +46,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
     day,
     month,
     year,
-  }: IFindAllInDayFromProviderDTO): Promise<Appointment[]> {
+  }: IFindAllInDayFromProviderDTO): Promise<Appointments[]> {
     const parsedMonth = String(month).padStart(2, '0');
     const parsedDay = String(day).padStart(2, '0');
     const appointments = await this.ormRepository.find({
@@ -66,7 +66,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
     provider_id,
     user_id,
     date,
-  }: ICreateAppointmentDTO): Promise<Appointment> {
+  }: ICreateAppointmentDTO): Promise<Appointments> {
     const appointment = this.ormRepository.create({
       provider_id,
       user_id,

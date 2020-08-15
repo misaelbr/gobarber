@@ -1,29 +1,44 @@
 import AppError from '@shared/errors/AppError';
 
 import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository';
+import FakeCacheProvider from '@shared/container/providers/CacheProvider/fakes/FakeCacheProvider';
+
 import ListProvidersService from './ListProvidersService';
 
 let fakeUsersRepository: FakeUsersRepository;
+let fakeCacheProvider: FakeCacheProvider;
 let listProviders: ListProvidersService;
 
 describe('ListProviders', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
-    listProviders = new ListProvidersService(fakeUsersRepository);
+    fakeCacheProvider = new FakeCacheProvider();
+
+    listProviders = new ListProvidersService(
+      fakeUsersRepository,
+      fakeCacheProvider
+    );
   });
 
-  it('should be able to list providersshow the user profile', async () => {
+  it('should be able to list providers show the user profile', async () => {
     const user1 = await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
     });
 
+    delete user1.password;
+    user1.avatar = '...';
+    Object.assign(user1, { avatar_url: null });
+
     const user2 = await fakeUsersRepository.create({
       name: 'John Trê',
       email: 'johntre@example.com',
       password: '123456',
     });
+
+    delete user2.password;
+    Object.assign(user2, { avatar_url: null });
 
     const loggedUser = await fakeUsersRepository.create({
       name: 'John Qua',
