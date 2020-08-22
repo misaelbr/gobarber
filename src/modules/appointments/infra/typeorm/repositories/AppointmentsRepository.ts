@@ -1,4 +1,4 @@
-import { getRepository, Repository, Between, Raw } from 'typeorm';
+import { getRepository, Repository, Raw } from 'typeorm';
 
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointmentDTO';
@@ -14,9 +14,12 @@ class AppointmentsRepository implements IAppointmentsRepository {
     this.ormRepository = getRepository(Appointments);
   }
 
-  public async findByDate(date: Date): Promise<Appointments | undefined> {
+  public async findByDate(
+    date: Date,
+    provider_id: string
+  ): Promise<Appointments | undefined> {
     const findAppointment = await this.ormRepository.findOne({
-      where: { date },
+      where: { date, provider_id },
     });
 
     return findAppointment;
@@ -35,6 +38,9 @@ class AppointmentsRepository implements IAppointmentsRepository {
           dateFieldName =>
             `to_char(${dateFieldName}, 'MM-YYYY') = '${parsedMonth}-${year}'`
         ),
+      },
+      order: {
+        date: 'ASC',
       },
     });
 
@@ -56,6 +62,10 @@ class AppointmentsRepository implements IAppointmentsRepository {
           dateFieldName =>
             `to_char(${dateFieldName}, 'DD-MM-YYYY') = '${parsedDay}-${parsedMonth}-${year}'`
         ),
+      },
+      relations: ['user'],
+      order: {
+        date: 'ASC',
       },
     });
 

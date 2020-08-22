@@ -1,15 +1,15 @@
+/* eslint-disable import/no-duplicates */
 import { startOfHour, isBefore, getHours, format } from 'date-fns';
 import { injectable, inject } from 'tsyringe';
 
 import ptBR from 'date-fns/locale/pt-BR';
 
 import AppError from '@shared/errors/AppError';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import INotitificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
 import Appointment from '../infra/typeorm/entities/Appointments';
 
-import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
-
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
-import INotitificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
 
 /**
  * Recebimento das informações
@@ -58,7 +58,8 @@ class CreateAppointmentService {
     }
 
     const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
-      appointmentDate
+      appointmentDate,
+      provider_id
     );
 
     if (findAppointmentInSameDate) {
